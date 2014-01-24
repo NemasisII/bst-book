@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.paging.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+</head>
+<body>
+  <div class="container">
+    <table class="table table-striped" id="tbl_list">
+      <thead>
+      <tr>
+        <th>รหัส</th>
+        <th>ชื่อหน่วยบริการ</th>
+        <th>ประเภท</th>
+      </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <ul class="pagination" id="paging"></ul>
+    <script>
+      var paging_format = function(type){
+        switch (type) {
+          case 'block':
+            if (!this.active)
+              return '<li class="disabled"><a href="">'
+                + this.value +
+                '</a></li>';
+            else if (this.value != this.page)
+              return '<li><a href="#' + this.value +
+                '">' + this.value +
+                '</a></li>';
+            return '<li class="active"><a href="#">'
+              + this.value +
+              '</a></li>';
+          case 'right':
+          case 'left':
+            if (!this.active) {
+              return "";
+            }
+            return '<li><a href="#' + this.value + '">'
+              + this.value +
+              '</a></li>';
+          case 'next':
+            if (this.active) {
+            return '<li><a href="#' + this.value +
+              '">»</a></li>';
+            }
+            return '<li class="disabled">' +
+              '<a href="">»</a></li>';
+          case 'prev':
+            if (this.active) {
+              return '<li><a href="#' +
+                this.value + '">«</a></li>';
+            }
+            return '<li class="disabled">' +
+              '<a href="">«</a></li>';
+          case 'first':
+            if (this.active) {
+              return '<li><a href="#' +
+                this.value + '"><</a></li>';
+            }
+            return '<li class="disabled">' +
+              '<a href=""><</a></li>';
+          case 'last':
+            if (this.active) {
+              return '<li><a href="#' +
+                this.value + '">></a></li>';
+            }
+            return '<li class="disabled">' +
+              '<a href="">></a></li>';
+          case 'fill':
+            if (this.active) {
+              return '<li class="disabled">' +
+                '<a href="#">...</a></li>';
+            }
+        }
+        return ""; // return nothing for missing branches
+      };
+      var get_total = function(callback) {
+        $.ajax({
+          url: 'http://localhost/bst-book/hospitals3.php',
+          type: 'GET',
+          dataType: 'jsonp',
+          data: { },
+          success: function(data){
+            if(data.ok){
+              if(data !== null){
+                callback(null, data.total);
+              }else{
+                callback('ไม่พบข้อมูล', null);
+              }
+            }else{
+              callback('เกิดข้อผิดพลาด', null);
+            }
+          },
+          error: function(xhr, status){
+            callback('Error:  [' + xhr.status + '] ' +
+              xhr.statusText, null);
+          }
+        });
+      };
+      var get_list = function(start, stop, callback) {
+        $.ajax({
+          url: 'http://localhost/bst-book/hospitals2.php',
+          type: 'GET',
+          dataType: 'jsonp',
+          data: {
+            start: start,
+            stop: stop
+          },
+          success: function(data){
+            if(data.ok){
+
+              if(data !== null){
+                callback(null, data.rows);
+              }else{
+                callback('ไม่พบข้อมูล');
+              }
+            }else{
+              callback('เกิดข้อผิดพลาด');
+            }
+          },
+          error: function(xhr, status){
+            callback('Error:  [' + xhr.status + '] ' +
+              xhr.statusText, null);
+          }
+        });
+      };
+      var set_list = function(rs) {
+        $(rs).each(function(i, v) {
+          $('#tbl_list > tbody').append(
+            '<tr>' +
+              '<td>' + v.hospcode + '</td>' +
+              '<td>' + v.name + '</td>' +
+              '<td>' + v.hosptype + '</td>' +
+              '</tr>'
+          );
+        });
+      };
+
+      var show_list = function(){
+        $('#paging').fadeIn('slow');
+        get_total(function(err, total){
+          if(err){
+            alert(err);
+            $('#tbl_list > tbody').append(
+              '<tr><td colspan="3">ไม่พบรายการ</td></tr>'
+            );
+          }else{
+            $('#paging').paging(total, {
+              format: " < . (qq -) nnncnnn (- pp) . >",
+              perpage: 10,
+              lapping: 1,
+              page: $.cookie('current_page'),
+              onSelect: function(page){
+                $.cookie('current_page', page);
+                get_list(this.slice[0], this.slice[1],
+                  function(err, rs){
+                    $('#tbl_list > tbody').empty();
+                    if(err){
+                      alert(err);
+                      $('#tbl_list > tbody').append(
+                        '<tr><td colspan="3">' +
+                          'ไม่พบรายการ</td></tr>'
+                      );
+                    }else{
+                      set_list(rs);
+                    }
+                  });
+              },
+              onFormat: paging_format
+            });
+          }
+        });
+      };
+      show_list();
+    </script>
+  </div>
+</body>
+</html>

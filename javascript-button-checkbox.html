@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <style>
+        body { padding: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+  ﻿<div class="btn-group" data-toggle="buttons">
+  <label class="btn btn-default">
+    <input type="checkbox" id="chk1"> หวาน
+  </label>
+  <label class="btn btn-default">
+    <input type="checkbox" id="chk2"> มัน
+  </label>
+  <label class="btn btn-default">
+    <input type="checkbox" id="chk3"> เค็ม
+  </label>
+</div>
+  <button type="button" id="btn_chk" class="btn btn-success">
+    Save
+  </button>
+  <script>
+    $('#btn_chk').on('click', function(e) {
+      e.preventDefault();
+      var chk1 = $('#chk1').prop('checked') ? '1' : '0',
+        chk2 = $('#chk2').prop('checked') ? '1' : '0',
+        chk3 = $('#chk3').prop('checked') ? '1' : '0';
+      alert(
+        'หวาน: ' + chk1 +
+          ', มัน: ' + chk2 +
+          ', เค็ม: ' + chk3
+      );
+    });
+  </script>
+</div>
+</body>
+</html>

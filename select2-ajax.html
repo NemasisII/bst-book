@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select2</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/select2.css" rel="stylesheet">
+    <link href="css/select2-bootstrap.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/select2.min.js"></script>
+    <script src="js/select2_locale_th.js"></script>
+</head>
+<body>
+  <div class="container">
+
+    ﻿<form action="#">
+      <p>
+        <input type="hidden" id="sl_hospitals" style="width: 300px;">
+        <button type="button" class="btn btn-primary" id="btn_show">
+          แสดงรายการ
+        </button>
+      </p>
+    </form>
+    ﻿<script>
+    $('#sl_hospitals').select2({
+      placeholder: 'พิมพ์ชื่อ หรือ รหัสหน่วยบริการ',
+      minimumInputLength: 2,
+      allowClear: true,
+      ajax: {
+        url: 'http://localhost/bst-book/hospitals.php',
+        dataType: 'jsonp',
+        type: 'GET',
+        quietMillis: 100,
+        data: function (term, page) {
+          return {
+            query: term,
+            start: page,
+            stop: 10
+          };
+        }, results: function (data, page) {
+          var more = (page * 10) < data.total;
+          return { results: data.rows, more: more };
+        }
+      }, id: function(data) {
+        return { id: data.code }
+      }, formatResult: function(data) {
+        return '[' + data.code + '] ' + data.name;
+      }, formatSelection: function(data) {
+        return '[' + data.code + '] ' + data.name;
+      }
+    });
+    $('#btn_show').on('click', function(e) {
+      e.preventDefault();
+      var obj = $('#sl_hospitals').select2('data');
+      if( obj === null ) {
+        alert( 'กรุณาเลือกรายการ' );
+      } else {
+        alert( obj.code + ' ' + obj.name );
+      }
+    });
+  </script>
+  </div>
+</body>
+</html>

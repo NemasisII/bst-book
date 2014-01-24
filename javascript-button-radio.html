@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Template</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <style>
+        body { padding: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+  ﻿<div class="btn-group" data-toggle="buttons">
+  <label class="btn btn-default">
+    <input type="radio" name="options" id="opt1"> ชอบ
+  </label>
+  <label class="btn btn-default">
+    <input type="radio" name="options" id="opt2"> ไม่ชอบ
+  </label>
+  <label class="btn btn-default">
+    <input type="radio" name="options" id="opt3"> เฉยๆ
+  </label>
+</div>
+  <button type="button" id="btn_vote" class="btn btn-primary">
+    Vote
+  </button>
+  ﻿<script>
+  $('#btn_vote').on('click', function(e) {
+    e.preventDefault();
+    var opt1 = $('#opt1').prop('checked') ? '1' : '0',
+      opt2 = $('#opt2').prop('checked') ? '1' : '0',
+      opt3 = $('#opt3').prop('checked') ? '1' : '0';
+    alert(
+      'ชอบ: ' + opt1 +
+        ', ไม่ชอบ: ' + opt2 +
+        ', เฉยๆ: ' + opt3
+    );
+  });
+</script>
+
+</div>
+</body>
+</html>
